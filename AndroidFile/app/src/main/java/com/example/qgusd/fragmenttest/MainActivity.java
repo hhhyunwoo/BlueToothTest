@@ -77,13 +77,33 @@ public class MainActivity extends AppCompatActivity {
         // get the paired devices
         Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
 
-        // list the paired devices in the TextView2
-        TextView textView2 = (TextView)findViewById(R.id.textView2);
-        for(BluetoothDevice pairedDevice : pairedDevices) {
+        // Get the ListView element
+        ListView listView1 = (ListView)findViewById(R.id.listView1);
 
-            textView2.append(Html.fromHtml("<b>" + pairedDevice.getName() + "</b>"));
-            textView2.append(" (" + pairedDevice.getAddress() + ")\n");
-        }
+        // Add the paired devices to an ArrayList
+        ArrayList<String> arrayList1 = new ArrayList<>();
+        for(BluetoothDevice pairedDevice : pairedDevices)
+            arrayList1.add(pairedDevice.getName());
 
+        // Create an array adapter for the ListView
+        ArrayAdapter<String> arrayAdapter1 = new ArrayAdapter<>(this, R.layout.paired_device_row, arrayList1);
+        listView1.setAdapter(arrayAdapter1);
+
+        // Add a click listener
+        listView1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+
+                // Get the element clicked and send Hello world to it
+                String listElement = (String)parent.getItemAtPosition(position);
+                //sayHelloToDevice(listElement);
+
+            }
+        });
     }
+    ///////////////////////paird devices 를 listView에 넣어서 표시
+    ///////////////////////onItemClickListener를 사용하여서 sayHelloDevice메서드 호출하도록
+
 }
