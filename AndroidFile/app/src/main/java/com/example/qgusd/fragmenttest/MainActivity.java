@@ -5,11 +5,13 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -47,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         }
-        //else listPairedDevices();
+        else listPairedDevices();
         super.onPostCreate(savedInstanceState);
     }
 
@@ -56,12 +58,32 @@ public class MainActivity extends AppCompatActivity {
 
         // check if the result comes from the request to enable bluetooth
         if(requestCode == REQUEST_ENABLE_BT)
-{
+            // the request was successful? if so, display paired devices
+            if(resultCode == RESULT_OK) listPairedDevices();
+
+            // if not, display a toast message and close the app
+            else {
                 Toast.makeText(this, "This app requires bluetooth", Toast.LENGTH_SHORT).show();
                 finish();
             }
 
-        super.onActivityResult(requestCode, resultCode, data);
+            super.onActivityResult(requestCode, resultCode, data);
     }
     //사용자가 request를 허가(또는 거부)하면 안드로이드는 앱의 onActivityResult 메소드가 호출되어서 request의 허가/거부를 확인할 수 있다.
+
+
+    private void listPairedDevices() {
+
+        // get the paired devices
+        Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+
+        // list the paired devices in the TextView2
+        TextView textView2 = (TextView)findViewById(R.id.textView2);
+        for(BluetoothDevice pairedDevice : pairedDevices) {
+
+            textView2.append(Html.fromHtml("<b>" + pairedDevice.getName() + "</b>"));
+            textView2.append(" (" + pairedDevice.getAddress() + ")\n");
+        }
+
+    }
 }
